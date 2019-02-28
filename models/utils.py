@@ -242,8 +242,8 @@ def compute_loss(model, inp, out, out_voc, **flags):
     sparce_softmax = tf.losses.sparse_softmax_cross_entropy(labels=out, logits=logits_seq)
     return tf.reduce_sum(sparce_softmax * mask) / tf.reduce_sum(mask)
 
-def compute_bleu(model, inp_lines, out_lines, bpe_sep='@@ ', **flags):
+def compute_bleu(model, inp_lines, out_lines, sess, inp_voc, out_voc, bpe_sep='@@ ', **flags):
     """ Estimates corpora-level BLEU score of model's translations given inp and reference out """
-    translations, _ = model.translate_lines(inp_lines, **flags)
+    translations, _ = model.translate_lines(inp_lines, sess, inp_voc, out_voc, **flags)
     # Note: if you experience out-of-memory error, split input lines into batches and translate separately
     return corpus_bleu([[ref] for ref in out_lines], translations) * 100

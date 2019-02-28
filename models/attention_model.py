@@ -1,5 +1,6 @@
 import tensorflow as tf
 import keras.layers as L
+import numpy as np
 from models.utils import infer_length, infer_mask
 from models.utils import select_values_over_last_axis, compute_logits, compute_loss, compute_bleu
 
@@ -100,7 +101,7 @@ class BasicModel:
         output_logits = self.logits(new_dec_out)
         return [new_dec_state], output_logits
 
-    def translate_lines(self, inp_lines, max_len=100):
+    def translate_lines(self, inp_lines, sess, inp_voc, out_voc, max_len=100):
         """
         Translates a list of lines by greedily selecting most likely next token at each step
         :returns: a list of output lines, a sequence of model states at each step
