@@ -17,6 +17,8 @@ def parse_OpenSubtitles(path):
     with open(path, 'r') as f:
         while True:
             line = f.readline()
+            if not line:
+                break
             if ":lang=\"en\"" in line:
                 good_tokens = regex_corner.sub(' ', line).split()[3:-2]
                 en_list.append(' '.join(good_tokens))
