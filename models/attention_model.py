@@ -30,13 +30,11 @@ class AttentionLayer:
             - probs - attention weights after softmax
         """
         with tf.variable_scope(self.name):
-            print("D", dec.shape)
             # Compute logits
             # We will use multiple logits for each attention sentence, may be it will improve score.
             a = self.out_att(self.activ(self.enc_att(enc) + tf.expand_dims(self.dec_att(dec),1)))
             # Apply mask - if mask is 0, logits should be -inf or -1e9
             # You may need tf.where
-            print("a", a.shape)
             a = tf.where(inp_mask, a, tf.fill(tf.shape(a), -1e9))
             # Compute attention probabilities (softmax)
             
