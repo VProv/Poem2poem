@@ -1,0 +1,39 @@
+Working ipython example of training translator is added.
+
+This notebook contains full pipeline of preparing data, training translator model and evaluation of this model. Current output exposes model trained with reversed mixture of 'OpenSubtitles' and 'Amalgama' datasets.
+--------------------------------
+Data preparation:
+Both 'OpenSubtitles' and 'Amalgama' datasets are reversed beforehand. This code loads already reversed data. Then data is transformed to set of independent pairs of lines ('English->Russian' in 'OpenSubtitles' and 'Foreign->Russian' in 'Amalgama').
+Then pairs are shuffled and splitted into 'train' and 'dev' subsets.
+Then we use 'train' subset to build BPE vocabularies.
+Current setting is 40k BPE units.
+BPE vocabularies are transformed to digestible format using module 'utils.py' copied from YSDA NLP course repo as is:
+https://github.com/yandexdataschool/nlp_course/blob/master/week04_seq2seq/utils.py
+--------------------------------
+Translator model is represented by class 'AttentiveModel' (we definitely should replace this name later with more informative one). This class supports two ways of object instantiation:
+
+1. Creating new model for training.
+In this case we should pass the following arguments to initializer:
+filename = None
+name = <human-readable-name>
+inp_voc = <source-lang-vocab-produced-by-utils.py>
+out_voc = <dest-lang-vocab-produced-by-utils.py>
+emb_size = <size-of-BPE-embeddings> (current launch is 128)
+hid_size = <size-of-encoder-decoder-attention-etc> (current launch is 256)
+
+2. Loading fully (or partially) trained model from file.
+In this case we should pass only name of '*.pkl' file containing weights and parameters of trained model which was previously saved with 'AttentiveModel.dump' method.
+
+AttentiveModel implements encoder-decoder translator architecture with attention. Attention layer is represented by separate class 'AttentionLayer' and present in 'AttentiveModel' class as field 'attention'.
+Encoder contains bidirectional LSTM layer.
+Decoder contains GRU layer (we can replace it with LSTM layer in future if needed).
+Further we will add new field: 'pentameter_model' which is intended to be trained along with translator in multitask setting.
+--------------------------------
+This notebook contains code for training phase. Currently we made 550k train steps. During each step we feed random batch of 32 pairs to model. After each 10k steps we save trained model to file.
+Plots show average BLEU of dev ~50 and loss ~ 2.1
+--------------------------------
+Also this notebook contains cell intended to fine-tune the model with only 'Amalgama' dataset (This cell is not executed yet). Also it would be useful to fine-tune model with artificial data generated from classic russian poetry with Backtranslation approach.
+--------------------------------
+This notebook exposes only training stage. As for inference stage, there is another one.
+--------------------------------
+Further, model classes will be copied to separate python modules ready for re-using.

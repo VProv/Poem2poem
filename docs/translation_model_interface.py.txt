@@ -1,0 +1,14 @@
+Module 'translation_model_interface.py' is added.
+
+Each class of translator model (currently we have only one such class) should be inherited from this interface. It contains three methods:
+
+* 'make_initial_state'
+    Accepts array of lines.
+    Returns initial translation state for lines.
+
+* 'get_next_state_and_logits'
+    Accepts current translation state and model outputs.
+    Returns next translation state and logits.
+
+* 'get_output_vocabulary'
+    Return output vocabulary used in model.

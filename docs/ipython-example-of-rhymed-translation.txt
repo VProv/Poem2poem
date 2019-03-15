@@ -1,0 +1,48 @@
+Working ipython example of rhymed translation is added.
+
+This notebook contains example of using model (trained on mixture of 'OpenSubtitles' and 'Amalgama') to translate list of lines with and without rhyme and with various settings of rhyming.
+
+Translation model is represented by interface 'ITranslationModel'. Classes inherited from this interface must implement the following methods:
+1. 'make_initial_state'
+2. 'get_next_state_and_logits'
+3. 'get_output_vocabulary'
+
+Class 'AttentiveModel' is inherited from 'ITranslationModel'. See more detailed description of 'AttentiveModel' class in 'docs/ipython-example-of-training-translator.txt'. In addition to all old methods here we add new methods required for inheritance.
+
+Translator itself is represented by class 'RhymeTranslator'. Initializer of this class requires two arguments:
+1. Instance of trained model of class 'AttentiveModel'.
+2. Instance of 'rupo.api.Engine' - tool for rhyme and stresses extraction for Russian language from Ilya Gusev's project:
+https://github.com/IlyaGusev/rupo
+
+--------------------------------
+
+Class 'RhymeTranslator' contains two main methods - 'translate_lines' and 'translate_lines_with_rhyme' (which are intended for outer usage) and some auxiliary methods (which are intended only for inner usage in this class).
+
+Method 'translate_lines' has 3 arguments:
+
+'lines' - list of unicode strings in source language;
+'sample_temperature' (0 by default which corresponds to argmax) - temperature of sampling; 
+'max_len' (100 by default) - we cut off each of translated lines in case if _EOS_ has not occured (good model will produce _EOS_ earlier than 'max_len' most of times).
+Here lines are translated independently on each other and returned as list of unicode strings in destination language.
+
+Method 'translate_lines_with_rhyme' has 6 arguments:
+
+'lines' - same as above;
+'rhyme_type' (by default RhymeType.WORD) This argument determines which rhyme model to use. Currently there are two possible values: RhymeType.WORD (corresponds to 'RuReversedWordRhymeTester' class which uses 'rupo' methods) and RhymeType.SUFFIX (corresponds to 'RuReversedSuffixRhymeTester' class which implements suffix-based rhyming). Both Rhyme tester classes are inherited from 'IRhymeTester' interface. In future we will add more types of rhym testers and we should inherit them from the same interface for compatibility with this model;
+'sample_temperature' - same as above;
+'max_len' - same as above;
+'rhyme_test_counts' = (by default (10, 10)) This argument is very important (often its better to not use it with default value). It is tuple of variable length. When we search for rhyme, we generate multiple variants of first word in both (REVERSED) lines we want to be rhymed. First word may consist of multiple BPE-tokens, also first token may be a punctuation, thus we need a tuple here. Tuple (a, b, c) means that we variate first (remember that our lines are REVERSED) token (BPE-unit) 'a' times, the second one - 'b' times and the third one - 'c' times;
+'max_total_rhyme_tests' (by default 1000) If we pass (a, b, c) to 'rhyme_test_counts' then complexity of rhyme search operation is (a*b*c)^2. This may be a huge number, so 'max_total_rhyme_tests' is intended to bound this number. However, it is not recommended to use it. Instead, set reasonable values in 'rhyme_test_counts'.
+
+--------------------------------
+
+Also there is an auxiliary class 'RuAlphabetInfo' used in both classes implementing 'IRhymeTester' interface. It provides convenient functions for retrieving Russian letter type.
+
+
+--------------------------------
+
+This notebook exposes only inference stage. As for training stage, there is another one.
+
+-------------------------------
+
+Further, translator classes will be copied to separate python modules ready for re-using.
