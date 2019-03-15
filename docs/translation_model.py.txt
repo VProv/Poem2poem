@@ -1,0 +1,12 @@
+Module translation_model.py is added
+
+This module contains two classes: 'AttentionLayer' and 'AttentiveModel'.
+They are based on corresponding classes from YSDA NLP course homework 4:
+https://github.com/yandexdataschool/nlp_course/blob/master/week04_seq2seq/practice.ipynb
+
+Unlike homework, here encoder is represented by bidirectional LSTM.
+Also, unlike homework, methods 'compute_logits' and 'compute_loss' are now part of the class.
+Also, now class 'AttentiveModel' is inherited from 'ITranslationModel' interface.
+Also, serialization is added (methods 'dump' and 'load').
+
+Note: there is command 'K.get_session()' in method 'initialize'. Call to 'K.get_session()' runs variable initializes for all variables including ones initialized using 'tf.global_variables_initializer()' (at least for Keras 2.0.5) thus it have to be called once here, otherwise model weights will be rewritten after training e.g. when 'get_weights' is called.
