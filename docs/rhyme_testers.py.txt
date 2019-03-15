@@ -1,0 +1,9 @@
+Module 'rhyme_testers.py' is added.
+
+This module contains 3 classes: auxiliary class 'RuAlphabetInfo' and 2 rhyme tester classes: 'RuReversedSuffixRhymeTester' and 'RuReversedWordRhymeTester' implementing 'IRhymeTester' interface.
+
+* 'RuAlphabetInfo' is an auxiliary class used in both 'RuReversedSuffixRhymeTester' and 'RuReversedWordRhymeTester' classes. It provides convenient functions for retrieving Russian letter type.
+
+* 'RuReversedSuffixRhymeTester' class implements suffix-based rhyming.
+
+* 'RuReversedWordRhymeTester' class implements word-based rhyming. It uses 'rupo' library.
