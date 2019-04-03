@@ -1,0 +1,28 @@
+Working ipython example of training translator with Rhythm meter model is added.
+
+This notebook contains working code for training translator with Rhythm meter model.
+
+Old notebook (there were some errors) is removed.
+
+Further, but not now, meter model and text processing utils classes will be moved to separate python modules ready for re-using. Though, currently they are almost ready for this moveing.
+
+--------------------------------
+Required data:
+This notebook requires reversed and bpe-tokenized parallel dataset for translator training and shakespeare sonnets parallel dataset for Rhythm meter training, see the second cell where data paths are specified.
+--------------------------------
+Rhythm meter model is represented by class 'MeterModel'. It is based on meter implementation from DeepSpeare but modified (10 steps -> >= 15 steps) to support variable length of stress pattern.
+
+NOTE: This class does yet support saving/loading.
+--------------------------------
+Main model represented by class 'AttentiveModel' has following modification for meter:
+
+1. Character encoding for output was added. It's implemented in class 'RuCharEncoder' and is shared with Rhythm meter model.
+
+2. 'MeterModel' was added as field.
+--------------------------------
+This notebook exposes only training stage. Inference with Rhythm meter is not implemented yet (it is a large separate task).
+--------------------------------
+This file also contains 3 utility classes:
+* 'Vocab' is better vocabulary class (then one from utils.py)
+* 'Tokenizer' is BPE tokenizer
+* 'EnRuDataset' represents parallel dataset
